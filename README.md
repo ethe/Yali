@@ -1,2 +1,2 @@
-# yali
+# Yali
 Yet another lambda interpreter
