@@ -1,4 +1,7 @@
-test_case = [
+require "./yali"
+
+
+test_cases = [
   [:+, 1, 2],
   [:*, 2, 3],
   [:*, 2, [:+, 3, 4]],
@@ -12,3 +15,8 @@ test_case = [
       [:let, [[:x, 4]],
         [:f, 3]]]]
 ]
+
+
+test_cases.each do |test_case|
+  puts interpreter test_case
+end

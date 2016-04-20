@@ -1,5 +1,6 @@
 alias Num = Int32 | Float64
 
+
 class Env
   def initialize(@env=[] of Tuple(Symbol, Num | Closure))
   end
