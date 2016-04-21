@@ -1,4 +1,5 @@
 alias Num = Int32 | Float64
+alias Expression = Num | Symbol | Array(Expression)
 
 
 class Env
@@ -22,12 +23,12 @@ end
 
 struct Closure
   property exp, env
-  def initialize(@exp, @env)
+  def initialize(@exp : Expression, @env : Env)
   end
 end
 
 
-def interpreter(exp, env=Env.new)
+def interpreter(exp : Expression, env=Env.new)
   case exp
   when Num
     return exp
@@ -52,8 +53,8 @@ def interpreter(exp, env=Env.new)
       when 2
         v1, v2 = interpreter(f, env), interpreter(e1, env)
         if v1.is_a?(Closure)
-          x = v1.exp[1] as Array(Symbol)
-          interpreter(v1.exp[2], Env.new(v1.env.setenv(x[0], v2 as Num)))
+          x = v1.exp[1] as Array(Expression)
+          interpreter(v1.exp[2], Env.new(v1.env.setenv(x[0] as Symbol, v2 as Num)))
         end
       else
         op, v1, v2 = f, interpreter(e1, env) as Num, interpreter(exp[2], env) as Num

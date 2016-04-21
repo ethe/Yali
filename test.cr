@@ -2,18 +2,18 @@ require "./yali"
 
 
 test_cases = [
-  [:+, 1, 2],
-  [:*, 2, 3],
-  [:*, 2, [:+, 3, 4]],
-  [:*, [:+, 1, 2], [:+, 3, 4]],
-  [[:lambda, [:x], [:*, 2, :x]], 3],
-  [:let, [[:x, 2]],
-    [:let, [[:f, [:lambda, [:y], [:*, :x, :y]]]],
-      [:f, 3]]],
-  [:let, [[:x, 2]],
-    [:let, [[:f, [:lambda, [:y], [:*, :x, :y]]]],
-      [:let, [[:x, 4]],
-        [:f, 3]]]]
+  [:+, 1, 2] of Expression,
+  [:*, 2, 3] of Expression,
+  [:*, 2, [:+, 3, 4] of Expression] of Expression,
+  [:*, [:+, 1, 2] of Expression, [:+, 3, 4] of Expression] of Expression,
+  [[:lambda, [:x] of Expression, [:*, 2, :x] of Expression] of Expression, 3] of Expression,
+  [:let, [[:x, 2] of Expression] of Expression,
+    [:let, [[:f, [:lambda, [:y] of Expression, [:*, :x, :y] of Expression] of Expression] of Expression] of Expression,
+      [:f, 3] of Expression] of Expression] of Expression,
+  [:let, [[:x, 2] of Expression] of Expression,
+    [:let, [[:f, [:lambda, [:y] of Expression, [:*, :x, :y] of Expression] of Expression] of Expression] of Expression,
+      [:let, [[:x, 4] of Expression] of Expression,
+        [:f, 3] of Expression] of Expression] of Expression] of Expression
 ]
 
 
