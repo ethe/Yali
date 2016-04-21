@@ -53,8 +53,9 @@ def interpreter(exp : Expression, env=Env.new)
       when 2
         v1, v2 = interpreter(f, env), interpreter(e1, env)
         if v1.is_a?(Closure)
-          x = v1.exp[1] as Array(Expression)
-          interpreter(v1.exp[2], Env.new(v1.env.setenv(x[0] as Symbol, v2 as Num)))
+          exp = v1.exp as Array(Expression)
+          x = exp[1] as Array(Expression)
+          interpreter(exp[2], Env.new(v1.env.setenv(x[0] as Symbol, v2 as Num | Closure)))
         end
       else
         op, v1, v2 = f, interpreter(e1, env) as Num, interpreter(exp[2], env) as Num
