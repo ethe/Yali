@@ -1,19 +1,19 @@
-require "./yali"
+require "./yali.cr"
 
 
 test_cases = [
-  [:+, 1, 2] of Expression,
-  [:*, 2, 3] of Expression,
-  [:*, 2, [:+, 3, 4] of Expression] of Expression,
-  [:*, [:+, 1, 2] of Expression, [:+, 3, 4] of Expression] of Expression,
-  [[:lambda, [:x] of Expression, [:*, 2, :x] of Expression] of Expression, 3] of Expression,
-  [:let, [[:x, 2] of Expression] of Expression,
-    [:let, [[:f, [:lambda, [:y] of Expression, [:*, :x, :y] of Expression] of Expression] of Expression] of Expression,
-      [:f, 3] of Expression] of Expression] of Expression,
-  [:let, [[:x, 2] of Expression] of Expression,
-    [:let, [[:f, [:lambda, [:y] of Expression, [:*, :x, :y] of Expression] of Expression] of Expression] of Expression,
-      [:let, [[:x, 4] of Expression] of Expression,
-        [:f, 3] of Expression] of Expression] of Expression] of Expression
+  [:+, 1, 2] of Exp,
+  [:*, 2, 3] of Exp,
+  [:*, 2, [:+, 3, 4] of Exp] of Exp,
+  [:*, [:+, 1, 2] of Exp, [:+, 3, 4] of Exp] of Exp,
+  [[:lambda, [:x] of Exp, [:*, 2, :x] of Exp] of Exp, 3] of Exp,
+  [:let, [[:x, 2] of Exp] of Exp,
+    [:let, [[:f, [:lambda, [:y] of Exp, [:*, :x, :y] of Exp] of Exp] of Exp] of Exp,
+      [:f, 3] of Exp] of Exp] of Exp,
+  [:let, [[:x, 2] of Exp] of Exp,
+    [:let, [[:f, [:lambda, [:y] of Exp, [:*, :x, :y] of Exp] of Exp] of Exp] of Exp,
+      [:let, [[:x, 4] of Exp] of Exp,
+        [:f, 3] of Exp] of Exp] of Exp] of Exp
 ]
 
 

@@ -1,79 +1,85 @@
 alias Num = Int32 | Float64
-alias Expression = Num | Symbol | Array(Expression)
+alias EnvPair = Tuple(Symbol, Num | Closure)
+alias Exp = Num | Symbol | Array(Exp)
+
+
+class Closure
+  property exp, env
+
+  def initialize(@exp : Exp, @env : Env)
+  end
+end
 
 
 class Env
-  def initialize(@env=[] of Tuple(Symbol, Num | Closure))
+  def initialize(@env : Array(EnvPair))
   end
 
-  def setenv(x : Symbol, v : Num | Closure)
-    return [{x, v}] + @env as Array({Symbol, Num | Closure})
+  def setenv(env_pair : EnvPair)
+    return [env_pair] + @env
   end
 
-  def lookup(x : Symbol)
+  def lookup(variable : Symbol)
     @env.each do |p|
-      if p[0] == x
+      if p[0] == variable
         return p[1]
       end
     end
-    raise "not defined"
+    raise "variable is not defined"
   end
 end
 
 
-struct Closure
-  property exp, env
-  def initialize(@exp : Expression, @env : Env)
-  end
-end
-
-
-def interpreter(exp : Expression, env=Env.new)
+def interpreter(exp : Exp, env=Env.new([] of EnvPair))
   case exp
   when Num
     return exp
   when Symbol
     return env.lookup(exp)
   when Array
-    f, e1 = exp
-    case f
-    when :lambda
-      return Closure.new(exp, env)
-    when :let
-      if e1.is_a?(Array)
-        pair = e1[0]
-        if pair.is_a?(Array)
-          x, e = pair[0] as Symbol, pair[1]
-          v1 = interpreter(e, env) as Num | Closure
-          interpreter(exp[2], Env.new(env.setenv(x, v1)))
-        end
-      end
-    else
-      case exp.size
-      when 2
-        v1, v2 = interpreter(f, env), interpreter(e1, env)
-        if v1.is_a?(Closure)
-          exp = v1.exp as Array(Expression)
-          x = exp[1] as Array(Expression)
-          if !v2.nil?
-            interpreter(exp[2], Env.new(v1.env.setenv(x[0] as Symbol, v2 as Num)))
+    if exp.size == 3
+      f = exp[0] as Symbol
+      e1 = exp[1] as Exp
+      e2 = exp[2] as Num | Exp
+      case f as Symbol
+      when :lambda
+        return Closure.new(exp, env)
+      when :let
+        if e1.is_a?(Array)
+          pair = e1[0]
+          if pair.is_a?(Array)
+            key = pair[0] as Symbol
+            value = interpreter(pair[1], env) as Num | Closure
+            interpreter(e2, Env.new(env.setenv({key, value} as EnvPair)))
           end
+        else
+          raise "syntax error"
         end
       else
-        op, v1, v2 = f, interpreter(e1, env) as Num, interpreter(exp[2], env) as Num
-        case op
-        when :+
-          return v1 + v2
-        when :-
-          return v1 - v2
-        when :*
-          return v1 * v2
-        when :/
-          return v1 / v2
+        if e1.is_a?(Exp)
+          op, v1, v2 = f, interpreter(e1, env) as Num, interpreter(e2, env) as Num
+          case op
+          when :+
+            return v1 + v2
+          when :-
+            return v1 - v2
+          when :*
+            return v1 * v2
+          when :/
+            return v1 / v2
+          end
+          raise "unknown option"
+        else
+          raise "syntax error"
         end
       end
+    elsif exp.size == 2  # invoke
+      v1, v2 = interpreter(exp[0], env) as Closure, interpreter(exp[1], env) as Num
+      exp = v1.exp as Array(Exp)
+      x = exp[1] as Array(Exp)
+      interpreter(exp[2], Env.new(v1.env.setenv({x[0] as Symbol, v2 as Closure | Num})))
+    else
+      "syntax error"
     end
-  else
-    raise "syntax error"
   end
 end

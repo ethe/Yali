@@ -1,6 +1,7 @@
 language: crystal
 crystal:
   - latest
+  - nightly
 script:
   - crystal build --release test.cr
   - ./test
