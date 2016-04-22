@@ -46,14 +46,10 @@ def interpreter(exp : Exp, env=Env.new([] of EnvPair))
         return Closure.new(exp, env)
       when :let
         if e1.is_a?(Array)
-          pair = e1[0]
-          if pair.is_a?(Array)
-            key = pair[0] as Symbol
-            value = interpreter(pair[1], env) as Num | Closure
-            interpreter(e2, Env.new(env.setenv({key, value} as EnvPair)))
-          end
-        else
-          raise "syntax error"
+          pair = e1[0] as Array(Exp)
+          key = pair[0] as Symbol
+          value = interpreter(pair[1], env) as Num | Closure
+          interpreter(e2, Env.new(env.setenv({key, value} as EnvPair)))
         end
       else
         if e1.is_a?(Exp)
@@ -68,9 +64,6 @@ def interpreter(exp : Exp, env=Env.new([] of EnvPair))
           when :/
             return v1 / v2
           end
-          raise "unknown option"
-        else
-          raise "syntax error"
         end
       end
     elsif exp.size == 2  # invoke
@@ -78,8 +71,6 @@ def interpreter(exp : Exp, env=Env.new([] of EnvPair))
       exp = v1.exp as Array(Exp)
       x = exp[1] as Array(Exp)
       interpreter(exp[2], Env.new(v1.env.setenv({x[0] as Symbol, v2 as Closure | Num})))
-    else
-      "syntax error"
     end
   end
 end
