@@ -45,25 +45,21 @@ def interpreter(exp : Exp, env=Env.new([] of EnvPair))
       when :lambda
         return Closure.new(exp, env)
       when :let
-        if e1.is_a?(Array)
-          pair = e1[0] as Array(Exp)
-          key = pair[0] as Symbol
-          value = interpreter(pair[1], env) as Num | Closure
-          interpreter(e2, Env.new(env.setenv({key, value} as EnvPair)))
-        end
+        pair = (e1 as Array(Exp)).[0] as Array(Exp)
+        key = pair[0] as Symbol
+        value = interpreter(pair[1], env) as Num | Closure
+        interpreter(e2, Env.new(env.setenv({key, value} as EnvPair)))
       else
-        if e1.is_a?(Exp)
-          op, v1, v2 = f, interpreter(e1, env) as Num, interpreter(e2, env) as Num
-          case op
-          when :+
-            return v1 + v2
-          when :-
-            return v1 - v2
-          when :*
-            return v1 * v2
-          when :/
-            return v1 / v2
-          end
+        op, v1, v2 = f, interpreter(e1, env) as Num, interpreter(e2, env) as Num
+        case op
+        when :+
+          return v1 + v2
+        when :-
+          return v1 - v2
+        when :*
+          return v1 * v2
+        when :/
+          return v1 / v2
         end
       end
     elsif exp.size == 2  # invoke
